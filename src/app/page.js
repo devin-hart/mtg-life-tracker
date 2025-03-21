@@ -6,7 +6,7 @@ import ConfirmModal from "./components/ConfirmModal";
 const initialPlayers = (count) =>
   Array.from({ length: count }, (_, i) => ({
     name: `Player ${i + 1}`,
-    life: 20,
+    life: 40,
     poison: 0,
     commander: {},
     rotation: 0,
@@ -35,6 +35,9 @@ const loadPlayersFromSession = () => {
 export default function App() {
   const [players, setPlayers] = useState(loadPlayersFromSession);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+
 
   const addPlayer = () => {
     if (players.length < 6) {
@@ -100,16 +103,30 @@ export default function App() {
         name: p.name,
         rotation: p.rotation,
       }));
+      setIsClient(true);
       sessionStorage.setItem("players", JSON.stringify(persistData));
     }
   }, [players]);
 
+  
   let gridCols = "grid-cols-1";
-  if (players.length >= 5) gridCols = "lg:grid-cols-3";
-  else if (players.length >= 3) gridCols = "md:grid-cols-2";
+  if (players.length >= 5) gridCols = "grid-cols-3";
+  else if (players.length >= 3) gridCols = "grid-cols-2";
+  
+  if (!isClient) return null;
 
   return (
     <div className="p-6 text-center">
+      <div className="flex justify-center mb-4">
+  <button
+    onClick={() => setShowControls(!showControls)}
+    className="text-white rounded"
+  >
+    {showControls ? "Hide Controls" : "Show Controls"}
+  </button>
+</div>
+
+      {showControls && (
       <div className="flex justify-between items-center mb-6 gap-4 flex-wrap">
         <div className="flex items-center gap-2">
           <button
@@ -136,8 +153,9 @@ export default function App() {
           Reset All
         </button>
       </div>
+      )}
 
-      <div className={`grid gap-4 ${gridCols}`}>
+      <div className={`grid gap-2 ${gridCols}`}>
         {players.map((player, i) => (
           <Player
             key={i}
@@ -160,3 +178,4 @@ export default function App() {
     </div>
   );
 };
+
