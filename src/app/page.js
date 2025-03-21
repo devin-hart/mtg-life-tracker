@@ -13,6 +13,7 @@ const initialPlayers = (count) =>
   }));
 
 const loadPlayersFromSession = () => {
+  if (typeof window === "undefined") return initialPlayers(2); 
   const raw = sessionStorage.getItem("players");
   if (raw) {
     try {
@@ -94,11 +95,13 @@ export default function App() {
   };
 
   useEffect(() => {
-    const persistData = players.map((p) => ({
-      name: p.name,
-      rotation: p.rotation,
-    }));
-    sessionStorage.setItem("players", JSON.stringify(persistData));
+    if (typeof window !== "undefined") {
+      const persistData = players.map((p) => ({
+        name: p.name,
+        rotation: p.rotation,
+      }));
+      sessionStorage.setItem("players", JSON.stringify(persistData));
+    }
   }, [players]);
 
   let gridCols = "grid-cols-1";
