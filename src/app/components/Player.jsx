@@ -3,8 +3,6 @@ import PlayerNameEditor from "./PlayerNameEditor";
 const Player = ({ index, data, onUpdate, players }) => {
     const { name, life, poison, commander, rotation } = data;
   
-    const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
-  
     const changeCommander = (sourceIndex, delta) => {
       const newAmount = Math.max(0, (commander[sourceIndex] || 0) + delta);
       onUpdate(index, {
